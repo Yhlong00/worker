@@ -1,2 +1,3 @@
-# worker
-Serverless Testing Worker
+# Worker
+
+A serverless worker repo for testing purpose. 
