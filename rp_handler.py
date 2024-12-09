@@ -2,6 +2,7 @@ import runpod
 import time  
 
 def handler(event):
+    print(f"Worker Start")
     input = event['input']
     
     prompt = input.get('prompt')  
