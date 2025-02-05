@@ -17,4 +17,4 @@ def handler(event):
 
 if __name__ == '__main__':
     max_concurrency = int(os.getenv('MAX_CONCURRENCY', 1))
-    runpod.serverless.start({'handler': handler, 'concurrency_modifier': max_concurrency})
+    runpod.serverless.start({'handler': handler, 'concurrent_handlers': max_concurrency})
