@@ -1,5 +1,6 @@
 import runpod
 import time  
+import os 
 
 def handler(event):
     print(f"Worker Start")
@@ -15,4 +16,5 @@ def handler(event):
     return prompt 
 
 if __name__ == '__main__':
-    runpod.serverless.start({'handler': handler})
+    max_concurrency = int(os.getenv('MAX_CONCURRENCY', 1))
+    runpod.serverless.start({'handler': handler, 'concurrency_modifier': max_concurrency})
