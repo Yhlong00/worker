@@ -11,6 +11,8 @@ def handler(event):
 
     print(f"Received prompt: {prompt}")
     print(f"Sleeping for {seconds} seconds...")
+    
+    # Invoke your Python function here to generate images, text, or any machine learning workload.
     time.sleep(seconds)  
     
     return prompt 
