@@ -10,6 +10,8 @@ import os
 import asyncio
 from datetime import timedelta
 
+logger = runpod.RunPodLogger()
+
 
 @dataclass
 class Range:
@@ -74,24 +76,10 @@ class State:
         json.dump(dct, open(filename, "w"))
 
     def update(self, dct: StateDict):
-        if "cold_start_range" in dct:
-            val = dct["cold_start_range"]
-            if isinstance(val, dict):
-                self.cold_start_range = Range(**val)
-            elif isinstance(val, Range):
-                self.cold_start_range = val
-    
-        if "execution_range" in dct:
-            val = dct["execution_range"]
-            if isinstance(val, dict):
-                self.execution_range = Range(**val)
-            elif isinstance(val, Range):
-                self.execution_range = val
-    
-        if "concurrency" in dct:
-            self.concurrency = dct["concurrency"]
-    
-        self.updated_at = time.time_ns()
+        for key in self.__dict__.keys():
+            if key in dct:
+                self.__dict__[key] = dct[key]
+                self.updated_at = time.time_ns()
         self.execution_range.update()
         self.cold_start_range.update()
         self.save_to_file()
@@ -129,8 +117,8 @@ class JobOutput:
 
 @dataclass
 class JobInput:
-    state: typing.Optional[StateDict]
     created_at: int
+    state: typing.Optional[StateDict] = None
 
 
 state = State.load_from_file(os.environ.get("STATE_FILE", "state.json"))
@@ -156,8 +144,10 @@ async def run_task(input: TaskInput) -> TaskOutput:
 async def handler(job: dict[str, typing.Any]) -> JobOutput:
     started_at = time.time_ns()
     input = JobInput(**job.get("input", {}))
+    logger.info(f"Job input: {input}")
     if input.state is not None:
         state.update(input.state)
+    logger.info(f"State: {state}")
     output = JobOutput(
         state=state,
         started_at=started_at,
@@ -176,9 +166,11 @@ async def handler(job: dict[str, typing.Any]) -> JobOutput:
             for _ in range(state.concurrency)
         )
     )
+    logger.info(f"Results: {results}")
     output.results = results
     output.ended_at = time.time_ns()
     output.execution_duration = output.ended_at - output.started_at
+    logger.info(f"Output: {output}")
     return output
 
 
