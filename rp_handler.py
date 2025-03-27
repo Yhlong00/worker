@@ -74,10 +74,24 @@ class State:
         json.dump(dct, open(filename, "w"))
 
     def update(self, dct: StateDict):
-        for key in self.__dict__.keys():
-            if key in dct:
-                self.__dict__[key] = dct[key]
-                self.updated_at = time.time_ns()
+        if "cold_start_range" in dct:
+            val = dct["cold_start_range"]
+            if isinstance(val, dict):
+                self.cold_start_range = Range(**val)
+            elif isinstance(val, Range):
+                self.cold_start_range = val
+    
+        if "execution_range" in dct:
+            val = dct["execution_range"]
+            if isinstance(val, dict):
+                self.execution_range = Range(**val)
+            elif isinstance(val, Range):
+                self.execution_range = val
+    
+        if "concurrency" in dct:
+            self.concurrency = dct["concurrency"]
+    
+        self.updated_at = time.time_ns()
         self.execution_range.update()
         self.cold_start_range.update()
         self.save_to_file()
