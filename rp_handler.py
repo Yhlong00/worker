@@ -1,21 +1,26 @@
 import runpod
-import time  
-import os 
+import os
+import time
+
+# load models
+
+def adjust_concurrency(max_concurrency):
+    max_concurrency = int(os.environ.get('MAX_CONCURRENCY', '1')) 
+    
+    print(f"Max Concurrency: {max_concurrency}")  
+
+    return max_concurrency 
 
 def handler(event):
-    print(f"Worker Start")
+    """RunPod job handler that runs the WebSocket server and waits for shutdown."""
     input = event['input']
     
-    prompt = input.get('prompt')  
+    prompt = input.get('prompt', 'Hello World')  
     seconds = input.get('seconds', 0)  
-
-    print(f"Received prompt: {prompt}")
-    print(f"Sleeping for {seconds} seconds...")
     
-    # Invoke your Python function here to generate images, text, or any machine learning workload.
     time.sleep(seconds)  
-    
-    return prompt 
+    # Start WebSocket server and wait for shutdown message
+    return prompt
 
 if __name__ == '__main__':
-    runpod.serverless.start({'handler': handler })
+    runpod.serverless.start({'handler': handler,  "concurrency_modifier": adjust_concurrency})
