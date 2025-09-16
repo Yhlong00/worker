@@ -12,16 +12,38 @@ def adjust_concurrency(max_concurrency):
 
     return max_concurrency 
 
-def handler(event):
-    """RunPod job handler that runs the WebSocket server and waits for shutdown."""
-    input = event['input']
+# Basic:
+# def handler(event):
+#     """RunPod job handler that runs the WebSocket server and waits for shutdown."""
+#     input = event['input']
     
-    prompt = input.get('prompt', 'Hello World')  
-    seconds = input.get('seconds', 0)  
+#     prompt = input.get('prompt', 'Hello World')  
+#     seconds = input.get('seconds', 0)  
     
-    time.sleep(seconds)  
-    # Start WebSocket server and wait for shutdown message
-    return prompt
+#     time.sleep(seconds)  
+#     # Start WebSocket server and wait for shutdown message
+#     return prompt
 
-if __name__ == '__main__':
-    runpod.serverless.start({'handler': handler,  "concurrency_modifier": adjust_concurrency})
+# if __name__ == '__main__':
+#     runpod.serverless.start({'handler': handler,  "concurrency_modifier": adjust_concurrency})
+
+
+# Stream:
+import time
+
+def handler(event):
+    input = event['input']
+    text = input.get('text', "Hello from Runpod!")
+    delay = input.get('delay', 2)
+
+    print(f"Fake Stream | Starting job {job['id']}")
+    print(f"Processing text: {text}")
+
+    # Stream character by character
+    for char in text:
+        time.sleep(delay)
+        yield {"status": "processing", "chunk": char}
+
+    yield {"status": "completed", "message": "Character streaming completed"}
+
+
