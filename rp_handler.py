@@ -30,7 +30,6 @@ def handler(event):
     text = input.get('text', "Hello from Runpod!")
     delay = input.get('delay', 2)
 
-    print(f"Fake Stream | Starting job {job['id']}")
     print(f"Processing text: {text}")
 
     # Stream character by character
