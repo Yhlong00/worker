@@ -29,8 +29,6 @@ def adjust_concurrency(max_concurrency):
 
 
 # Stream:
-import time
-
 def handler(event):
     input = event['input']
     text = input.get('text', "Hello from Runpod!")
