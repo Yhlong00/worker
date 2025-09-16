@@ -24,10 +24,6 @@ def adjust_concurrency(max_concurrency):
 #     # Start WebSocket server and wait for shutdown message
 #     return prompt
 
-# if __name__ == '__main__':
-#     runpod.serverless.start({'handler': handler,  "concurrency_modifier": adjust_concurrency})
-
-
 # Stream:
 def handler(event):
     input = event['input']
@@ -45,3 +41,5 @@ def handler(event):
     yield {"status": "completed", "message": "Character streaming completed"}
 
 
+if __name__ == '__main__':
+    runpod.serverless.start({'handler': handler,  "concurrency_modifier": adjust_concurrency})
