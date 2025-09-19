@@ -4,4 +4,13 @@
 
 A very basic serverless worker repo for testing purpose. 
 
+```json
+{
+  "input": {
+    "prompt": "Hello!",
+    "seconds": 5
+  }
+}
+```
+
 
